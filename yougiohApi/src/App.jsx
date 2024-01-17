@@ -10,23 +10,20 @@ import "bootstrap/dist/css/bootstrap.min.css"
 function App() {
 
   const [cards, setCards] = useState([])
-  
-  const getCards = () => {
-    axios.get('https://db.ygoprodeck.com/api/v7/cardinfo.php?num=20&offset=0')
-      .then(response => {
-        console.log(response.data.data);
 
-        setCards(response.data.data)
-      }).catch(error => {
-        console.log(error);
-      })
-  }
+  axios.get('https://db.ygoprodeck.com/api/v7/cardinfo.php?num=20&offset=0')
+    .then(response => {
+      console.log(response.data.data);
+
+      setCards(response.data.data)
+    }).catch(error => {
+      console.log(error);
+    })
 
 
   return (
     <>
       <div className="container">
-        <button onClick={getCards}>cliccami</button>
         <div className="row">
           {cards.map((card) => (
             <div className="col-4 mb-4" key={card.id}>
