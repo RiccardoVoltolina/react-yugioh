@@ -11,19 +11,30 @@ function App() {
 
   const [cards, setCards] = useState([])
 
+  const [variableCards, setVariableCards] = useState('')
+
+  const filteredCards = event => {
+    setVariableCards(event.target.value);
+
+    console.log('value is:', event.target.value);
+  };
+
+
   axios.get('https://db.ygoprodeck.com/api/v7/cardinfo.php?num=20&offset=0')
     .then(response => {
-      console.log(response.data.data);
 
       setCards(response.data.data)
     }).catch(error => {
       console.log(error);
     })
 
+ 
+
 
   return (
     <>
       <div className="container">
+        <input onChange={filteredCards} placeholder='Cerca la tua carta' type="text" name="searchedCard" id="searchedCard" />
         <div className="row">
           {cards.map((card) => (
             <div className="col-4 mb-4" key={card.id}>
