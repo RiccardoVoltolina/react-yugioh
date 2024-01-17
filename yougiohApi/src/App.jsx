@@ -4,39 +4,35 @@ import './App.css'
 import axios, { isCancel, AxiosError } from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css"
 
-
-
-
 function App() {
 
   const [cards, setCards] = useState([])
-
   const [variableCards, setVariableCards] = useState('')
 
   const filteredCards = event => {
     setVariableCards(event.target.value);
-
-    console.log('value is:', event.target.value);
   };
 
+  useEffect(() => {
+    axios.get('https://db.ygoprodeck.com/api/v7/cardinfo.php?num=20&offset=0')
+      .then(response => {
+        setCards(response.data.data)
+      }).catch(error => {
+        console.log(error);
+      })
+  }, []);
 
-  axios.get('https://db.ygoprodeck.com/api/v7/cardinfo.php?num=20&offset=0')
-    .then(response => {
+  // Filtra le carte in base al valore di variableCards
+  const filtered = cards.filter(card => card.archetype && card.archetype.toLowerCase().startsWith(variableCards.toLowerCase()));
 
-      setCards(response.data.data)
-    }).catch(error => {
-      console.log(error);
-    })
+  let content;
 
- 
-
-
-  return (
-    <>
+  if (filtered.length > 0) {
+    content = (
       <div className="container">
-        <input onChange={filteredCards} placeholder='Cerca la tua carta' type="text" name="searchedCard" id="searchedCard" />
+        <input className='my-3' onChange={filteredCards} placeholder='Cerca la tua carta' type="text" name="searchedCard" id="searchedCard" />
         <div className="row">
-          {cards.map((card) => (
+          {filtered.map((card) => (
             <div className="col-4 mb-4" key={card.id}>
               <div className='card h-100 d-flex flex-column'>
                 <h1 className='text-center'>{card.archetype}</h1>
@@ -52,8 +48,19 @@ function App() {
           ))}
         </div>
       </div>
+    );
+  } else {
+    content = (
+      <div className="container">
+        <input className='my-3' onChange={filteredCards} placeholder='Cerca la tua carta' type="text" name="searchedCard" id="searchedCard" />
+        <p>La tua ricerca non ha portato nessun risultato.</p>
+      </div>
+    );
+  }
 
-
+  return (
+    <>
+      {content}
     </>
   )
 }
