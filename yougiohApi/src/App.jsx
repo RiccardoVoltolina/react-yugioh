@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
 import axios, { isCancel, AxiosError } from 'axios';
-import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from './Navbar';
+
 
 function App() {
 
   const [cards, setCards] = useState([])
   const [variableCards, setVariableCards] = useState('')
 
+
+
   const filteredCards = event => {
     setVariableCards(event.target.value);
   };
+
+  // uso useEffect, per evitare di avere un loop di chiamate axios
 
   useEffect(() => {
     axios.get('https://db.ygoprodeck.com/api/v7/cardinfo.php?num=20&offset=0')
@@ -22,8 +27,10 @@ function App() {
       })
   }, []);
 
-  // Filtra le carte in base al valore di variableCards
+  // Filtro le carte in base al valore di variableCards e assegno il risultato alla variabile filtered
+
   const filtered = cards.filter(card => card.archetype && card.archetype.toLowerCase().startsWith(variableCards.toLowerCase()));
+
 
   let content;
 
@@ -60,6 +67,7 @@ function App() {
 
   return (
     <>
+      <Navbar></Navbar>
       {content}
     </>
   )
